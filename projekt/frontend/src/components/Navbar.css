@@ -1,0 +1,74 @@
+/* frontend/src/components/Navbar.css */
+.navbar {
+    background-color: #333;
+    color: white;
+    padding: 36px 2cm;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    transition: padding 0.3s ease, background-color 0.3s ease;
+}
+
+/* Klasa shrink dla zmniejszania navbaru podczas scrollowania */
+.navbar.shrink {
+    padding: 16px 2cm; /* Mniejszy padding po scrollu */
+    background-color: #000000cc; /* Półprzezroczyste tło */
+}
+
+.logo {
+    display: flex;
+    align-items: center; /* Wyśrodkowanie ikony i tekstu w pionie */
+}
+
+.logo a {
+    text-decoration: none; /* Usunięcie podkreślenia */
+    color: white; /* Ustawienie koloru tekstu na biały */
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logo-icon {
+    width: 40px; /* Ustaw odpowiednią szerokość ikony */
+    height: auto; /* Zachowaj proporcje */
+    margin-right: 12px; /* Odstęp między ikoną a tekstem */
+}
+
+.navbar-navItems {
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    line-height: normal;
+    vertical-align: middle;
+}
+
+.navbar-navItems li {
+    margin-left: 14px;
+}
+
+.navbar-navItems a {
+    text-decoration: none;
+    font-family: 'Times New Roman', Times, serif;
+    color: #fff;
+    font-size: 16px;
+    transition: color 0.8s ease;
+    border: 2px solid transparent;
+    padding: 5px 10px;
+    display: inline-block;
+    position: relative;
+    font-weight: bold;
+}
+
+.navbar-navItems a:hover,
+.navbar-navItems a.active {
+    color: #5b50f2;
+    transition: border 0.8s ease;
+    border: 2px solid #5b50f2;
+    box-shadow: 0px 0px 1em #5b50f2;
+}

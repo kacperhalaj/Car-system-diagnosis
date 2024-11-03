@@ -1,0 +1,53 @@
+/* frontend/src/components/Home.css */
+.home-container {
+    background-color: #f0f0f0; /* Szare tło */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Pełna wysokość ekranu */
+    padding: 0 20px; /* Odstępy po bokach */
+    box-sizing: border-box;
+}
+
+.content-card {
+    background-color: white; /* Tło kafelka */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Efekt cienia */
+    max-width: 500px;
+    text-align: center;
+    
+}
+
+.content-card h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.content-card p {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.login-button {
+    background-color: #5b50f2; /* Kolor przycisku */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+    background-color: #372dc4; /* Kolor przycisku po najechaniu */
+    transition: border 0.8s ease;
+    border: 1px solid #372dc4;
+    box-shadow: 0px 0px 1em #372dc4;
+    color: #b9b4b4;
+}

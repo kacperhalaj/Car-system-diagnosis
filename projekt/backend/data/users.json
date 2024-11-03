@@ -1,0 +1,6 @@
+{
+    "_id": 1,
+    "login": "admin",
+    "password": "admin123",
+    "rola": "administrator"
+}
