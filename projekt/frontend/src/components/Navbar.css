@@ -48,6 +48,11 @@
     vertical-align: middle;
 }
 
+.navbar-navItems.active {
+    display: block; /* Pokaż menu, gdy jest otwarte */
+    background-color: #000000cc;
+}
+
 .navbar-navItems li {
     margin-left: 14px;
 }
@@ -71,4 +76,53 @@
     transition: border 0.8s ease;
     border: 2px solid #5b50f2;
     box-shadow: 0px 0px 1em #5b50f2;
+}
+
+/* Style dla hamburgera */
+.hamburger {
+    display: none; /* Domyślnie ukryte */
+    flex-direction: column;
+    cursor: pointer;
+    right: 10px;
+}
+
+.hamburger.active {
+    display: flex; /* Pokaż hamburger, gdy menu jest otwarte */
+}
+
+.hamburger .bar {
+    width: 35px;
+    height: 3px;
+    border-radius: 5px;
+    background-color: white;
+    margin: 4px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px white;
+}
+
+/* Responsywność */
+@media (max-width: 768px) {
+    .navbar-navItems {
+        display: none; /* Ukryj menu na mniejszych ekranach */
+        flex-direction: column;
+        position: absolute;
+        top: 100%; /* Wysunięcie menu poniżej navbaru */
+        left: 0;
+        width: 100%; /* Szerokość na całą szerokość ekranu */
+        background-color: #333; /* Tło menu */
+        padding: 10px 0;
+    }
+
+    .navbar-navItems.active {
+        display: flex; /* Pokaż menu, gdy jest otwarte */
+    }
+
+    .navbar-navItems li {
+        margin: 10px 0; /* Odstęp między elementami menu */
+        text-align: center; /* Wyśrodkowanie elementów menu */
+    }
+
+    .hamburger {
+        display: flex; /* Pokaż hamburger na małych ekranach */
+    }
 }

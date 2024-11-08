@@ -1,9 +1,10 @@
 // frontend/src/App.js
 import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './components/Home';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Login from './components/Login'; // Nowy import
 import './App.css';
 
 function App() {
@@ -14,7 +15,7 @@ function App() {
                 <div className="app-content">
                     <Routes>
                         <Route path="/" element={<Home />} />
-                        {/* Dodaj inne trasy w razie potrzeby */}
+                        <Route path="/login" element={<Login />} />
                     </Routes>
                 </div>
                 <Footer />
