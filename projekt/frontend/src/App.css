@@ -54,6 +54,7 @@
 
 .app-content {
   flex: 1; /* Treść będzie się rozciągać, aby wypełnić dostępne miejsce */
+  min-height: 100vh;
 }
 
 

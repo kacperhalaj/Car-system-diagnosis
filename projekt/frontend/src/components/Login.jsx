@@ -13,9 +13,6 @@ const Login = () => {
     <div className="login-container">
       <div className="background-container">
         <div className={`wrapper ${isRegister ? 'active' : ''}`}>
-          <span className="icon-close" onClick={toggleForm}>
-            <ion-icon name="checkmark"></ion-icon>
-          </span>
 
           {/* Formularz logowania */}
           <div className={`form-box login ${isRegister ? 'hidden' : 'show'}`}>
@@ -35,11 +32,11 @@ const Login = () => {
                 <label>
                   <input type="checkbox" /> Zapamiętaj hasło
                 </label>
-                <a href="#">Zapomniałeś hasła?</a>
+                <a href="/" role="button" onClick={(e) => e.preventDefault()}>Zapomniałeś hasła?</a>
               </div>
               <button type="submit" className="btn">Zaloguj się</button>
               <div className="login-register">
-                <p>Nie masz konta? <a href="#" onClick={toggleForm}>Załóż</a></p>
+                <p>Nie masz konta?<a href="/" role="button" onClick={(e) => { e.preventDefault(); toggleForm(); }}> Załóż</a></p>
               </div>
             </form>
           </div>
@@ -65,7 +62,7 @@ const Login = () => {
               </div>
               <button type="submit" className="btn">Zarejestruj się</button>
               <div className="login-register">
-                <p>Masz już konto? <a href="#" onClick={toggleForm}>Zaloguj się</a></p>
+                <p>Masz już konto?<a href="/" role="button" onClick={(e) => { e.preventDefault(); toggleForm(); }}> Zaloguj się</a></p>
               </div>
             </form>
           </div>
