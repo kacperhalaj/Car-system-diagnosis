@@ -1,5 +1,5 @@
 .background-container {
-    position: absolute;
+    position: relative;
     top: 0;
     left: 0;
     width: 100%;
@@ -11,7 +11,10 @@
     justify-content: center;
     align-items: center;
     z-index: 0;
+    padding-top: 80px;
+    padding-bottom: 50px;
   }
+  
 
   .wrapper {
     position: relative;
@@ -27,7 +30,7 @@
     align-items: center;
     overflow: hidden;
     transition: height 0.5s ease-in-out, width 0.5s ease-in-out;
-    margin-top: 180px;
+    margin-top: 190px;
     margin-bottom: 100px;
     z-index: 1;
   }
@@ -175,3 +178,68 @@
     padding: 20px 0;
   }
   
+
+
+  .wrapper.forgot-active {
+    height: 400px;
+    transition: height 0.5s ease-in-out;
+  }
+  
+  .wrapper.email-sent-active {
+    height: 350px;
+    transition: height 0.5s ease-in-out;
+  }
+  
+  .reset-message {
+    text-align: center;
+    color: #f39c12;
+    margin-top: 20px;
+  }
+  
+  .reset-message p {
+    margin-top: 30px;
+    font-size: 1.1em;
+  }
+
+  .reset-message a {
+    color: #f39c12;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  
+  .reset-message a:hover {
+    text-decoration: underline;
+  }
+  
+  .reset-message strong{
+    color: white;
+  }
+
+  .back-to-login {
+    margin-top: 15px;
+    text-align: center;
+  }
+  
+  .back-to-login a {
+    color: #f39c12;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  
+  .back-to-login a:hover {
+    text-decoration: underline;
+  }
+  
+  
+  @media (max-width: 1366px){
+    .background-container{
+      height: 110vh;
+    }
+  }
+
+  @media (max-width: 480px){
+    .background-container{
+      height: 120vh;
+    }
+    
+  }
