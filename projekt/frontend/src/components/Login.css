@@ -233,13 +233,13 @@
   
   @media (max-width: 1366px){
     .background-container{
-      height: 110vh;
+      height: 140vh;
     }
   }
 
   @media (max-width: 480px){
     .background-container{
-      height: 120vh;
+      height: 160vh;
     }
     
   }

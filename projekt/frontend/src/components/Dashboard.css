@@ -37,12 +37,18 @@
   border-radius: 5px;
   min-width: 200px;
   font-size: 14px; /* Ustalenie spójnego rozmiaru czcionki */
+  height: 42px;
 }
+
+
 
 .search-input-group {
   display: flex;
   gap: 1rem;
+  max-height: 200px; /* Ograniczenie wysokości listy */
+  overflow-y: auto;
 }
+
 
 /* Search Button */
 .search-button {
@@ -248,3 +254,5 @@
   line-height: 20px;
   margin-left: 40px;
 }
+
+
