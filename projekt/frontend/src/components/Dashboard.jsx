@@ -4,6 +4,12 @@ import "./Dashboard.css";
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 
+//dod
+import AddVehicleForm from './AddVehicleForm';
+import VehicleDetailsModal from "./VehicleDetailsModal";
+
+
+
 const Dashboard = () => {
   const [mileageFrom, setMileageFrom] = useState(""); // Stan dla "Przebieg od"
   const [mileageTo, setMileageTo] = useState(""); // Stan dla "Przebieg do"
@@ -19,6 +25,41 @@ const Dashboard = () => {
   const [activeFilter, setActiveFilter] = useState("all"); // Stan dla aktywnego filtra
   const fuelTypeRef = useRef(null); // Referencja do kontenera opcji rodzaju paliwa
   const [selectedBodyType, setSelectedBodyType] = useState(""); // Wybrany typ nadwozia
+
+  //const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
+
+  const handleShowDetails = (vehicle) => {
+    setSelectedVehicle(vehicle);
+  };
+
+  const handleCloseDetails = () => {
+    setSelectedVehicle(null);
+  };
+
+  const handleUpdateVehicle = (updatedVehicle) => {
+    console.log("Zaktualizowane dane pojazdu:", updatedVehicle);
+    // W przyszłości dodaj funkcję aktualizacji danych w bazie
+  };
+
+  const vehicles = [
+    { id: 1, brand: "BMW", model: "335i", vin: "07B03JNDGOE89956", year: 2021, mileage: 50000 },
+    { id: 2, brand: "Audi", model: "A4", vin: "09B03KDJSOE45678", year: 2019, mileage: 30000 },
+    // Dodaj więcej pojazdów
+  ];
+  // 
+  // const openModal = () => {
+  //   setIsModalOpen(true);
+  // };
+
+  // const closeModal = () => {
+  //   setIsModalOpen(false);
+  // };
+  const [showVehicleForm, setShowVehicleForm] = useState(false);
+
+  const handleOpenForm = () => setShowVehicleForm(true);
+  const handleCloseForm = () => setShowVehicleForm(false);
+  // 
 
   // Obsługa kliknięcia poza rodzaj paliwa
   useEffect(() => {
@@ -167,6 +208,19 @@ const Dashboard = () => {
   const handleBodyTypeChange = (selectedOption) => {
     setSelectedBodyType(selectedOption ? selectedOption.value : "");
   };
+
+
+  const handleResetForm = () => {
+    setYearFrom(null);
+    setYearTo(null);
+    setMileageFrom(null);
+    setMileageTo(null);
+    setFuelTypes({ benzyna: false, diesel: false, gaz: false });
+    setSelectedBrand(null);
+    setSelectedModel(null);
+    setSelectedBodyType(null);
+  };
+
 
   return (
     <div className="dashboard-container">
@@ -618,6 +672,19 @@ const Dashboard = () => {
           </div>
 
           <button className="search-button">Wyszukaj</button>
+          <button className="reset-button" onClick={handleResetForm}>Wyczyść formularz</button>
+
+          {/*  */}
+
+          <button onClick={handleOpenForm} className="dashboard">Dodaj Pojazd</button>
+          {showVehicleForm && (
+            <div id="add-vehicle-modal-root">
+              <AddVehicleForm onClose={handleCloseForm} />
+            </div>
+          )}
+
+          {/*  */}
+
         </div>
 
         {/* Filter Buttons */}
@@ -645,15 +712,28 @@ const Dashboard = () => {
 
         {/* Wyniki wyszukiwania */}
         <div className="search-results">
-          {Array(8).fill(0).map((_, index) => (
-            <div className="vehicle-card" key={index}>
+          {vehicles.map((vehicle) => (
+            <div className="vehicle-card" key={vehicle.id}>
               <div className="vehicle-icon">🚗</div>
-              <h3 className="vehicle-title">2021 BMW 335i</h3>
-              <p className="vehicle-vin">VIN: 07B03JNDGOE89956</p>
-              <button className="details-button">Zobacz szczegóły</button>
+              <h3 className="vehicle-title">{`${vehicle.year} ${vehicle.brand} ${vehicle.model}`}</h3>
+              <p className="vehicle-vin">VIN: {vehicle.vin}</p>
+              <button
+                className="details-button"
+                onClick={() => handleShowDetails(vehicle)}
+              >
+                Zobacz szczegóły
+              </button>
             </div>
           ))}
         </div>
+
+        {selectedVehicle && (
+          <VehicleDetailsModal
+            vehicle={selectedVehicle}
+            onClose={handleCloseDetails}
+            onUpdate={handleUpdateVehicle}
+          />
+        )}
       </div>
     </div>
   );
