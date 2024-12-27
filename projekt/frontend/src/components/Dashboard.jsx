@@ -4,19 +4,57 @@ import "./Dashboard.css";
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 
-//dod
+//TODO: Dodaj formularz dodawania pojazdu
 import AddVehicleForm from './AddVehicleForm';
 import VehicleDetailsModal from "./VehicleDetailsModal";
 
 
 
 const Dashboard = () => {
+
+  const [pojazdy, setPojazdy] = useState([]); // Stan dla pojazdów
+  const [filteredPojazdy, setFilteredPojazdy] = useState([]); // Stan dla przefiltrowanych pojazdów
+  //const [selectedVehicle, setSelectedVehicle] = useState(null); // Stan dla wybranego pojazdu
+
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/pojazdy')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        setPojazdy(data); // Ustaw dane pojazdów
+        setFilteredPojazdy(data); // Ustaw przefiltrowane pojazdy
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
+  const [ubezpieczenia, setUbezpieczenia] = useState([]);
+  useEffect(() => {
+    // Odczyt danych z pliku JSON
+    fetch('http://localhost:5000/api/ubezpieczenia')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        setUbezpieczenia(data);
+      })
+      .catch(error => console.error('Error fetching insurance data:', error));
+  }, []);
+
+
   const [mileageFrom, setMileageFrom] = useState(""); // Stan dla "Przebieg od"
   const [mileageTo, setMileageTo] = useState(""); // Stan dla "Przebieg do"
   const [fuelTypes, setFuelTypes] = useState({
     benzyna: false,
     diesel: false,
     gaz: false,
+    hybryda: false,
   });
   const [showFuelOptions, setShowFuelOptions] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState(""); // Wybrana marka
@@ -25,6 +63,11 @@ const Dashboard = () => {
   const [activeFilter, setActiveFilter] = useState("all"); // Stan dla aktywnego filtra
   const fuelTypeRef = useRef(null); // Referencja do kontenera opcji rodzaju paliwa
   const [selectedBodyType, setSelectedBodyType] = useState(""); // Wybrany typ nadwozia
+
+
+
+
+  //dodajemy stan dla formularza
 
   //const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
@@ -42,12 +85,7 @@ const Dashboard = () => {
     // W przyszłości dodaj funkcję aktualizacji danych w bazie
   };
 
-  const vehicles = [
-    { id: 1, brand: "BMW", model: "335i", vin: "07B03JNDGOE89956", year: 2021, mileage: 50000 },
-    { id: 2, brand: "Audi", model: "A4", vin: "09B03KDJSOE45678", year: 2019, mileage: 30000 },
-    // Dodaj więcej pojazdów
-  ];
-  // 
+
   // const openModal = () => {
   //   setIsModalOpen(true);
   // };
@@ -59,7 +97,7 @@ const Dashboard = () => {
 
   const handleOpenForm = () => setShowVehicleForm(true);
   const handleCloseForm = () => setShowVehicleForm(false);
-  // 
+
 
   // Obsługa kliknięcia poza rodzaj paliwa
   useEffect(() => {
@@ -83,6 +121,7 @@ const Dashboard = () => {
         benzyna: checked,
         diesel: checked,
         gaz: checked,
+        hybryda: checked,
       });
     } else {
       setFuelTypes((prev) => ({
@@ -119,7 +158,7 @@ const Dashboard = () => {
   };
 
   const handleCustomValue = (inputValue, setter) => {
-    const cleanedValue = inputValue.replace(/[^\d]/g, ''); // Usuń znaki nienumeryczne
+    const cleanedValue = inputValue.replace(/\D/g, ''); // Usuń znaki nienumeryczne
     if (cleanedValue) {
       setter({ label: `${formatMileage(cleanedValue)} km`, value: parseInt(cleanedValue, 10) });
     }
@@ -173,21 +212,11 @@ const Dashboard = () => {
     setSelectedModel(""); // Resetujemy model przy zmianie marki
 
     // Ustaw dostępne modele w zależności od wybranej marki
-    if (brand === "Audi") {
-      setModels([
-        { value: "A3", label: "A3" },
-        { value: "A4", label: "A4" },
-        { value: "A6", label: "A6" },
-      ]);
-    } else if (brand === "BMW") {
-      setModels([
-        { value: "Series 3", label: "Series 3" },
-        { value: "Series 5", label: "Series 5" },
-        { value: "Series 7", label: "Series 7" },
-      ]);
-    } else {
-      setModels([]); // Brak modeli dla nieznanej marki
-    }
+    const availableModels = pojazdy
+      .filter(pojazd => pojazd.marka === brand)
+      .map(pojazd => ({ value: pojazd.model, label: pojazd.model }));
+
+    setModels(availableModels);
   };
 
   // Zmieniamy wybrany model
@@ -198,8 +227,29 @@ const Dashboard = () => {
   // Funkcja obsługująca kliknięcie przycisku filtra
   const handleFilterClick = (filter) => {
     setActiveFilter(filter);
+    setCurrentPage(0);
   };
 
+  // Przypisz typ pojazdu: Motocykl, jeśli `typ` to "motor" (case insensitive), w przeciwnym razie Samochód
+  const pojazdyWithType = filteredPojazdy.map((pojazd) => {
+    const typNormalized = (pojazd.typ || "").toLowerCase(); // Normalizuj do małych liter
+    return {
+      ...pojazd,
+      typ: typNormalized === "motor" ? "Motocykl" : "Samochód",
+    };
+  });
+
+  // Liczba wszystkich pojazdów w każdej kategorii
+  const totalCars = pojazdyWithType.filter((p) => p.typ === "Samochód").length;
+  const totalMotorcycles = pojazdyWithType.filter((p) => p.typ === "Motocykl").length;
+
+  // Filtrowanie pojazdów na podstawie aktywnego filtra
+  const filteredByCategory = pojazdyWithType.filter((pojazd) => {
+    if (activeFilter === "all") return true; // Wszystkie pojazdy
+    if (activeFilter === "cars") return pojazd.typ === "Samochód";
+    if (activeFilter === "motorcycles") return pojazd.typ === "Motocykl";
+    return true;
+  });
 
   const [yearFrom, setYearFrom] = useState(null); // Rok produkcji od
   const [yearTo, setYearTo] = useState(null); // Rok produkcji do
@@ -209,7 +259,48 @@ const Dashboard = () => {
     setSelectedBodyType(selectedOption ? selectedOption.value : "");
   };
 
+  // Funkcja wyszukiwania
+  const handleSearch = () => {
+    const filtered = pojazdy.filter((pojazd) => {
+      // Przykład logiki filtrowania
+      const keyword = document.querySelector('.search-input').value.toLowerCase(); // Słowo kluczowe
+      const vin = document.querySelector('#vin').value.toLowerCase(); // VIN
+      const registrationNumber = document.querySelector('#registrationNumber').value.toLowerCase(); // Numer rejestracyjny
 
+      if (
+        registrationNumber &&
+        !pojazd.numerRejestracyjny.toLowerCase().includes(registrationNumber)
+      )
+        return false;
+
+      if (keyword && !(
+        pojazd.marka.toLowerCase().includes(keyword) ||
+        pojazd.model.toLowerCase().includes(keyword) ||
+        (pojazd.typ && pojazd.typ.toLowerCase().includes(keyword))
+      )) return false;
+
+      if (vin && !pojazd.vin.toLowerCase().includes(vin)) return false;      // VIN
+
+      if (yearFrom && pojazd.rokProdukcji < yearFrom.value) return false;    //rok produkcj od
+      if (yearTo && pojazd.rokProdukcji > yearTo.value) return false;        //rok produkcji do
+
+      if (mileageFrom && pojazd.przebieg < mileageFrom.value) return false;  //przebieg od
+      if (mileageTo && pojazd.przebieg > mileageTo.value) return false;      //przebieg do
+
+      if (selectedBrand && pojazd.marka !== selectedBrand) return false;     //marka
+      if (selectedModel && pojazd.model !== selectedModel) return false;     //model
+      if (selectedBodyType && pojazd.typ !== selectedBodyType) return false; //typ nadwozia
+
+      const selectedFuelTypes = Object.keys(fuelTypes).filter(fuel => fuelTypes[fuel]);
+      if (selectedFuelTypes.length > 0 && !selectedFuelTypes.includes(pojazd.rodzajPaliwa.toLowerCase())) return false;
+
+      return true;
+    });
+    setFilteredPojazdy(filtered);
+  };
+
+
+  // Funkcja resetująca formularz
   const handleResetForm = () => {
     setYearFrom(null);
     setYearTo(null);
@@ -219,8 +310,41 @@ const Dashboard = () => {
     setSelectedBrand(null);
     setSelectedModel(null);
     setSelectedBodyType(null);
+    setFilteredPojazdy(pojazdy);
+    document.querySelector('.search-input').value = '';
+    document.querySelector('#vin').value = '';
+    document.querySelector('#registrationNumber').value = '';
   };
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 10; // 2 wiersze * 5 kolumn
+
+  // Sortowanie danych przed paginacją
+  const sortedPojazdy = filteredByCategory.sort((a, b) => {
+    // Jeśli _id jest liczbą, rzutuj na liczbę i sortuj
+    if (!isNaN(a._id) && !isNaN(b._id)) {
+      return parseInt(b._id, 10) - parseInt(a._id, 10);
+    }
+    // Jeśli _id jest stringiem, sortuj alfanumerycznie
+    return b._id.toString().localeCompare(a._id.toString());
+  });
+
+  const totalPages = Math.ceil(sortedPojazdy.length / itemsPerPage);
+
+  // Wybieramy elementy do wyświetlenia na bieżącej stronie
+  const currentItems = sortedPojazdy.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages - 1) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
     <div className="dashboard-container">
@@ -232,8 +356,8 @@ const Dashboard = () => {
             placeholder="Wprowadź słowo kluczowe"
             className="search-input"
           />
-          <input type="text" placeholder="VIN" className="search-input" />
-
+          <input type="text" placeholder="VIN" className="search-input" id="vin" />
+          <input type="text" placeholder="Numer rejestracyjny" className="search-input" id="registrationNumber" />
           <div className="search-input-group">
             {/* Rok produkcji od */}
             <div className="select-wrapper">
@@ -451,7 +575,6 @@ const Dashboard = () => {
           </div>
 
 
-
           {/* Rodzaj paliwa */}
           <div className="fuel-type-container" ref={fuelTypeRef}>
             <div
@@ -482,7 +605,7 @@ const Dashboard = () => {
                   <input
                     type="checkbox"
                     name="all"
-                    checked={fuelTypes.benzyna && fuelTypes.diesel && fuelTypes.gaz}
+                    checked={fuelTypes.benzyna && fuelTypes.diesel && fuelTypes.gaz && fuelTypes.hybryda}
                     onChange={handleFuelChange}
                   />
                   Wszystkie rodzaje paliwa
@@ -514,6 +637,15 @@ const Dashboard = () => {
                   />
                   Gaz
                 </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="hybryda"
+                    checked={fuelTypes.hybryda}
+                    onChange={handleFuelChange}
+                  />
+                  Hybryda
+                </label>
               </div>
             )}
           </div>
@@ -525,10 +657,7 @@ const Dashboard = () => {
               classNamePrefix="select"
               value={selectedBrand ? { value: selectedBrand, label: selectedBrand } : null}
               onChange={handleBrandChange}
-              options={[
-                { value: "Audi", label: "Audi" },
-                { value: "BMW", label: "BMW" },
-              ]}
+              options={pojazdy.map(pojazd => ({ value: pojazd.marka, label: pojazd.marka }))} // Ustaw marki z danych
               placeholder="Marka pojazdu"
               isClearable
               isSearchable
@@ -576,7 +705,7 @@ const Dashboard = () => {
               classNamePrefix="select"
               value={selectedModel ? { value: selectedModel, label: selectedModel } : null}
               onChange={handleModelChange}
-              options={models}
+              options={models}//
               placeholder="Model pojazdu"
               isClearable
               isSearchable
@@ -630,6 +759,7 @@ const Dashboard = () => {
                 { value: "Hatchback", label: "Hatchback" },
                 { value: "SUV", label: "SUV" },
                 { value: "Coupe", label: "Coupe" },
+                { value: "Motor", label: "Motor" },
               ]}
               placeholder="Typ nadwozia"
               isClearable
@@ -671,19 +801,17 @@ const Dashboard = () => {
             />
           </div>
 
-          <button className="search-button">Wyszukaj</button>
-          <button className="reset-button" onClick={handleResetForm}>Wyczyść formularz</button>
 
-          {/*  */}
-
-          <button onClick={handleOpenForm} className="dashboard">Dodaj Pojazd</button>
+          <div className="button-container">
+            <button className="search-button" onClick={handleSearch}>Wyszukaj</button>
+            <button className="reset-button" onClick={handleResetForm}>Wyczyść formularz</button>
+            <button onClick={handleOpenForm} className="dashboard">Dodaj Pojazd</button>
+          </div>
           {showVehicleForm && (
             <div id="add-vehicle-modal-root">
               <AddVehicleForm onClose={handleCloseForm} />
             </div>
           )}
-
-          {/*  */}
 
         </div>
 
@@ -694,32 +822,61 @@ const Dashboard = () => {
             className={`filter-button ${activeFilter === "all" ? "active" : ""}`}
             onClick={() => handleFilterClick("all")}
           >
-            Wszystkie <span className="badge">500</span>
+            Wszystkie <span className="badge">{filteredPojazdy.length}</span>
           </button>
           <button
-            className={`filter-button ${activeFilter === "ready" ? "active" : ""}`}
-            onClick={() => handleFilterClick("ready")}
+            className={`filter-button ${activeFilter === "cars" ? "active" : ""}`}
+            onClick={() => handleFilterClick("cars")}
           >
-            Gotowe <span className="badge">423</span>
+            Samochody <span className="badge">{totalCars/*filteredByCategory.filter((p) => p.typ === "Samochód").length*/}</span>
           </button>
           <button
-            className={`filter-button ${activeFilter === "not-ready" ? "active" : ""}`}
-            onClick={() => handleFilterClick("not-ready")}
+            className={`filter-button ${activeFilter === "motorcycles" ? "active" : ""}`}
+            onClick={() => handleFilterClick("motorcycles")}
           >
-            Niegotowe <span className="badge">77</span>
+            Motocykle <span className="badge">{totalMotorcycles/*filteredByCategory.filter((p) => p.typ === "Motocykl").length*/}</span>
           </button>
         </div>
 
         {/* Wyniki wyszukiwania */}
+
+
+        {/*{vehicles.map((vehicle) => (*/}
+        {/*    <div className="vehicle-card" key={vehicle.id}>*/}
+        {/*      <div className="vehicle-icon">🚗</div>*/}
+        {/*      <h3 className="vehicle-title">{`${vehicle.year} ${vehicle.brand} ${vehicle.model}`}</h3>*/}
+        {/*      <p className="vehicle-vin">VIN: {vehicle.vin}</p>*/}
+        {/*      <button className="details-button" onClick={() => handleShowDetails(vehicle)}>Zobacz szczegóły</button>*/}
+        {/*    </div>*/}
+        {/*))}*/}
+
+        {/* Paginacja */}
+        <div className="pagination">
+          <button
+            className="pagination-button"
+            onClick={handlePrevPage}
+            disabled={currentPage === 0}
+          >
+            Poprzednia
+          </button>
+          <button
+            className="pagination-button"
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages - 1}
+          >
+            Następna
+          </button>
+        </div>
         <div className="search-results">
-          {vehicles.map((vehicle) => (
-            <div className="vehicle-card" key={vehicle.id}>
+          {currentItems.map((pojazd) => (
+            <div className="vehicle-card" key={pojazd._id}>
               <div className="vehicle-icon">🚗</div>
-              <h3 className="vehicle-title">{`${vehicle.year} ${vehicle.brand} ${vehicle.model}`}</h3>
-              <p className="vehicle-vin">VIN: {vehicle.vin}</p>
+              <h3 className="vehicle-title">{`${pojazd.rokProdukcji} ${pojazd.marka} ${pojazd.model}`}</h3>
+              <p className="vehicle-vin">VIN: {pojazd.vin}</p>
+              <p className="vehicle-registration">Numer rejestracyjny: {pojazd.numerRejestracyjny}</p>
               <button
                 className="details-button"
-                onClick={() => handleShowDetails(vehicle)}
+                onClick={() => handleShowDetails(pojazd)}
               >
                 Zobacz szczegóły
               </button>
@@ -732,8 +889,19 @@ const Dashboard = () => {
             vehicle={selectedVehicle}
             onClose={handleCloseDetails}
             onUpdate={handleUpdateVehicle}
+            ubezpieczenia={ubezpieczenia.filter(
+              (ubezpieczenie) => ubezpieczenie.vin === selectedVehicle.vin
+            )}
           />
         )}
+
+
+
+        {/*<div className="search-results">*/}
+
+
+        {/*</div>*/}
+
       </div>
     </div>
   );

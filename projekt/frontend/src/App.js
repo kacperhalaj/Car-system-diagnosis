@@ -1,11 +1,11 @@
-// frontend/src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './components/Home';
-import Login from './components/Login'; // Nowy import
-import Dashboard from "./components/Dashboard";
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
+import PrivateRoute from './components/PrivateRoute';
 import './App.css';
 
 function App() {
@@ -17,7 +17,11 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/login" element={<Login />} />
-                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route
+                            path="/dashboard"
+                            element={<PrivateRoute component={Dashboard} />}
+                        />
+                        <Route path="*" element={<Navigate to="/" />} />
                     </Routes>
                 </div>
                 <Footer />

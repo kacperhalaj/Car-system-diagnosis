@@ -1,37 +1,36 @@
 import React, { useState } from "react";
 import "./VehicleDetailsModal.css";
+import ServiceHistoryModal from "./ServiceHistoryModal";
+import OwnersModal from "./OwnersModal";
+import InsuranceModal from "./InsuranceModal"; // Zaimportowanie komponentu ubezpieczenia
 
-const VehicleDetailsModal = ({ vehicle, onClose, onUpdate }) => {
+
+const VehicleDetailsModal = ({ vehicle, onClose, onUpdate, ubezpieczenia }) => {
     const [formData, setFormData] = useState(vehicle);
+    const [showServiceHistoryModal, setShowServiceHistoryModal] = useState(false);
+    const [showOwnersModal, setShowOwnersModal] = useState(false);
+    const [showInsuranceModal, setShowInsuranceModal] = useState(false); // Dodanie stanu dla modalu ubezpieczenia
 
-    // Pobierz bieżący rok
     const currentYear = new Date().getFullYear();
-
-    // Funkcja do formatowania przebiegu
-    const formatMileage = (value) => {
-        // Usuń wszystkie nie-cyfry, oprócz spacji
-        const cleanedValue = value.replace(/\D/g, '');
-
-        // Dodaj spacje co 3 cyfry
-        return cleanedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        let newValue = value.replace(/^0+(?=\d)/, ""); // Usuń zerowe prefiksy
 
-        // Usuń zerowe prefiksy, pozostawiając jedno zero, jeśli wartość to "0"
-        let newValue = value.replace(/^0+(?=\d)/, "");
-
-        // Walidacja wartości
-        if (name === "year") {
-            // Rok musi być większy od 0 i nie większy niż bieżący rok
+        // Walidacja dla odpowiednich pól
+        if (name === "rokProdukcji") {
+            // Rok produkcji nie może być większy niż bieżący rok lub mniejszy niż 0
             newValue = Math.max(0, Math.min(currentYear, parseInt(newValue) || 0)).toString();
         }
 
-        if (name === "mileage") {
-            // Przebieg nie może być ujemny, usuwamy zera na początku
+        if (name === "przebieg" || name === "pojemnoscSilnika" || name === "numerRejestracyjny") {
+            // Przebieg i pojemność silnika muszą być liczbami >= 0
             newValue = Math.max(0, parseInt(newValue.replace(/\D/g, '')) || 0).toString();
-            newValue = formatMileage(newValue);
+        }
+
+        if (name === "liczbaDrzwi") {
+            // Liczba drzwi musi być liczbą całkowitą >= 0
+            newValue = Math.max(0, parseInt(newValue) || 0).toString();
         }
 
         setFormData({ ...formData, [name]: newValue });
@@ -39,20 +38,54 @@ const VehicleDetailsModal = ({ vehicle, onClose, onUpdate }) => {
 
     const handleUpdate = () => {
         onUpdate(formData);
-        onClose(); // Zamknij okno po aktualizacji
+        onClose();
     };
 
     return (
         <div className="modal-overlay">
             <div className="modal-content">
-                <h2>Szczegóły pojazdu</h2>
+                <div className="modal-header">
+                    <h2>Szczegóły pojazdu</h2>
+                    <div className="close" onClick={onClose}>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <svg viewBox="0 0 36 36" className="circle">
+                            <path
+                                stroke-dasharray="100, 100"
+                                d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                            />
+                        </svg>
+                    </div>
+                </div>
                 <div className="modal-form">
+                    <label>
+                        VIN:
+                        <input
+                            type="text"
+                            name="vin"
+                            value={formData.vin}
+                            onChange={handleChange}
+                        />
+                    </label>
+                    <label>
+                        Numer Rejestracyjny:
+                        <input
+                            type="text"
+                            name="numerRejestracyjny"
+                            value={formData.numerRejestracyjny}
+                            onChange={handleChange}
+                        />
+                    </label>
                     <label>
                         Marka:
                         <input
                             type="text"
-                            name="brand"
-                            value={formData.brand}
+                            name="marka"
+                            value={formData.marka}
                             onChange={handleChange}
                         />
                     </label>
@@ -66,39 +99,115 @@ const VehicleDetailsModal = ({ vehicle, onClose, onUpdate }) => {
                         />
                     </label>
                     <label>
-                        VIN:
+                        Rodzaj Paliwa:
                         <input
                             type="text"
-                            name="vin"
-                            value={formData.vin}
+                            name="rodzajPaliwa"
+                            value={formData.rodzajPaliwa}
                             onChange={handleChange}
                         />
                     </label>
                     <label>
-                        Rok produkcji:
+                        Rok Produkcji:
                         <input
                             type="number"
-                            name="year"
-                            value={formData.year}
+                            name="rokProdukcji"
+                            value={formData.rokProdukcji}
+                            onChange={handleChange}
+                        />
+                    </label>
+                    <label>
+                        Typ:
+                        <input
+                            type="text"
+                            name="typ"
+                            value={formData.typ}
+                            onChange={handleChange}
+                        />
+                    </label>
+                    <label>
+                        Liczba Drzwi:
+                        <input
+                            type="number"
+                            name="liczbaDrzwi"
+                            value={formData.liczbaDrzwi}
+                            onChange={handleChange}
+                        />
+                    </label>
+                    <label>
+                        Kolor:
+                        <input
+                            type="text"
+                            name="kolor"
+                            value={formData.kolor}
                             onChange={handleChange}
                         />
                     </label>
                     <label>
                         Przebieg:
                         <input
-                            type="text" // Zmieniono na text, by obsługiwać formatowanie
-                            name="mileage"
-                            pattern="\d*" // Pozwala tylko na cyfry
-                            value={formData.mileage}
+                            type="text"
+                            name="przebieg"
+                            value={formData.przebieg}
                             onChange={handleChange}
                         />
                     </label>
+                    <label>
+                        Pojemność Silnika: (cm³)
+                        <input
+                            type="number"
+                            name="pojemnoscSilnika"
+                            value={formData.pojemnoscSilnika}
+                            onChange={handleChange}
+                        />
+                    </label>
+                    <br />
+                    <button className="hbutton" onClick={() => setShowServiceHistoryModal(true)}>
+                        Historia Serwisowa
+                    </button>
+                    <button className="hbutton" onClick={() => setShowOwnersModal(true)}>
+                        Właściciele
+                    </button>
+                    {/* Dodanie przycisku do ubezpieczenia */}
+                    <button className="hbutton" onClick={() => setShowInsuranceModal(true)}>
+                        Ubezpieczenie
+                    </button>
                 </div>
                 <div className="modal-buttons">
                     <button onClick={handleUpdate}>Zaktualizuj</button>
+                    <button onClick={onClose} className="cancel-button">Anuluj</button>
                     <button onClick={onClose}>Zamknij</button>
                 </div>
             </div>
+            {showServiceHistoryModal && (
+                <ServiceHistoryModal
+                    history={formData.historiaSerwisowa}
+                    onClose={() => setShowServiceHistoryModal(false)}
+                    onUpdate={(updatedHistory) =>
+                        setFormData({ ...formData, historiaSerwisowa: updatedHistory })
+                    }
+                />
+            )}
+            {showOwnersModal && (
+                <OwnersModal
+                    owners={formData.wlasciciele}
+                    onClose={() => setShowOwnersModal(false)}
+                    onUpdate={(updatedOwners) =>
+                        setFormData({ ...formData, wlasciciele: updatedOwners })
+                    }
+                />
+            )}
+            {showInsuranceModal && (
+                <InsuranceModal
+                    insurance={ubezpieczenia || {}} // Jeśli nie ma danych, przekazujemy pusty obiekt
+                    onClose={() => setShowInsuranceModal(false)}
+                    onUpdate={(updatedInsurance) =>
+                        setFormData({ ...formData, ubezpieczenie: updatedInsurance })
+                    }
+                />
+            )}
+
+
         </div>
     );
 };

@@ -1,6 +1,29 @@
-{
+[
+  {
     "_id": 1,
-    "login": "admin",
+    "login": "admin@serwis.pl",
     "password": "admin123",
     "rola": "administrator"
-}
+  },
+  {
+    "_id": 2,
+    "login": "ngb66928@kisoq.com",
+    "password": "p14luddb",
+    "rola": "user",
+    "name": "Yanusj"
+  },
+  {
+    "_id": 3,
+    "login": "stach@ds2.pl",
+    "password": "dsdauhsdfuihsdfbui",
+    "rola": "user",
+    "name": "Dżanuszowski"
+  },
+  {
+    "_id": 4,
+    "login": "cos@cos.pl",
+    "password": "haslo",
+    "rola": "user",
+    "name": "ksdksd"
+  }
+]

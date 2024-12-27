@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import './AddVehicleForm.css';
+
 
 const customSelectStyles = {
     control: (base) => ({
@@ -60,6 +61,33 @@ const bodyTypeOptions = [
     { value: 'Kabriolet', label: 'Kabriolet' },
 ];
 
+const makeOptions = [
+    { value: 'Audi', label: 'Audi' },
+    { value: 'BMW', label: 'BMW' },
+    { value: 'Volkswagen', label: 'Volkswagen' },
+    { value: 'Ford', label: 'Ford' },
+    { value: 'Opel', label: 'Opel' },
+    { value: 'Mercedes', label: 'Mercedes' },
+    { value: 'Toyota', label: 'Toyota' },
+    { value: 'Skoda', label: 'Skoda' },
+    { value: 'Renault', label: 'Renault' },
+    { value: 'Peugeot', label: 'Peugeot' },
+    { value: 'Honda', label: 'Honda' },
+];
+
+const modelsByMake = {
+    Audi: ['A3', 'A4', 'Q5'],
+    BMW: ['320i', '530i', 'X5'],
+    Volkswagen: ['Golf', 'Passat', 'Tiguan'],
+    Ford: ['Focus', 'Mondeo', 'Kuga'],
+    Mercedes: ['A-Class', 'C-Class', 'GLC'],
+    Toyota: ['Corolla', 'Yaris', 'RAV4'],
+    Skoda: ['Octavia', 'Superb', 'Kodiaq'],
+    Renault: ['Clio', 'Megane', 'Kadjar'],
+    Peugeot: ['308', '3008', '5008'],
+    Honda: ['Civic', 'Accord', 'CR-V'],
+};
+
 const AddVehicleForm = ({ onClose }) => {
     const currentYear = new Date().getFullYear();
     const yearOptions = Array.from({ length: currentYear - 1899 }, (_, i) => ({
@@ -79,6 +107,16 @@ const AddVehicleForm = ({ onClose }) => {
     };
 
     const [vehicleData, setVehicleData] = useState(initialFormState);
+    const [modelOptions, setModelOptions] = useState([]);
+
+    // Update model options when make changes
+    useEffect(() => {
+        if (vehicleData.make) {
+            setModelOptions(modelsByMake[vehicleData.make] || []);
+        } else {
+            setModelOptions([]);
+        }
+    }, [vehicleData.make]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -169,6 +207,7 @@ const AddVehicleForm = ({ onClose }) => {
                                 ...prevState,
                                 make: newValue ? newValue.label : '', // Przypisujemy label
                             }))}
+                            options={makeOptions}
                             styles={customSelectStyles}
                             placeholder="Wprowadź lub wybierz markę"
                             isClearable
@@ -192,6 +231,7 @@ const AddVehicleForm = ({ onClose }) => {
                             styles={customSelectStyles}
                             placeholder="Wprowadź lub wybierz model"
                             isClearable
+                            options={modelOptions.map(model => ({ value: model, label: model }))}
                             onCreateOption={(inputValue) => handleCustomValue(inputValue, (value) => setVehicleData(prevState => ({
                                 ...prevState,
                                 model: value.label,
