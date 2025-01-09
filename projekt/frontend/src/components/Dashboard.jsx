@@ -4,7 +4,7 @@ import "./Dashboard.css";
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 
-//TODO: Dodaj formularz dodawania pojazdu
+
 import AddVehicleForm from './AddVehicleForm';
 import VehicleDetailsModal from "./VehicleDetailsModal";
 
@@ -17,35 +17,21 @@ const Dashboard = () => {
   //const [selectedVehicle, setSelectedVehicle] = useState(null); // Stan dla wybranego pojazdu
 
 
-  useEffect(() => {
-    fetch('http://localhost:5000/api/pojazdy')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        setPojazdy(data); // Ustaw dane pojazdów
-        setFilteredPojazdy(data); // Ustaw przefiltrowane pojazdy
-      })
-      .catch(error => console.error('Error fetching data:', error));
-  }, []);
-  const [ubezpieczenia, setUbezpieczenia] = useState([]);
-  useEffect(() => {
-    // Odczyt danych z pliku JSON
-    fetch('http://localhost:5000/api/ubezpieczenia')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        setUbezpieczenia(data);
-      })
-      .catch(error => console.error('Error fetching insurance data:', error));
-  }, []);
+  // const [ubezpieczenia, setUbezpieczenia] = useState([]);
+  // useEffect(() => {
+  //   // Odczyt danych z pliku JSON
+  //   fetch('http://localhost:5000/api/ubezpieczenia')
+  //     .then(response => {
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! status: ${response.status}`);
+  //       }
+  //       return response.json();
+  //     })
+  //     .then(data => {
+  //       setUbezpieczenia(data);
+  //     })
+  //     .catch(error => console.error('Error fetching insurance data:', error));
+  // }, []);
 
 
   const [mileageFrom, setMileageFrom] = useState(""); // Stan dla "Przebieg od"
@@ -55,6 +41,7 @@ const Dashboard = () => {
     diesel: false,
     gaz: false,
     hybryda: false,
+    elektryczny: false,
   });
   const [showFuelOptions, setShowFuelOptions] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState(""); // Wybrana marka
@@ -63,9 +50,6 @@ const Dashboard = () => {
   const [activeFilter, setActiveFilter] = useState("all"); // Stan dla aktywnego filtra
   const fuelTypeRef = useRef(null); // Referencja do kontenera opcji rodzaju paliwa
   const [selectedBodyType, setSelectedBodyType] = useState(""); // Wybrany typ nadwozia
-
-
-
 
   //dodajemy stan dla formularza
 
@@ -82,8 +66,31 @@ const Dashboard = () => {
 
   const handleUpdateVehicle = (updatedVehicle) => {
     console.log("Zaktualizowane dane pojazdu:", updatedVehicle);
-    // W przyszłości dodaj funkcję aktualizacji danych w bazie
+    fetchVehicles(); // Odśwież listę pojazdów
   };
+
+  // Funkcja do pobierania pojazdów
+  const fetchVehicles = () => {
+    fetch('http://localhost:5000/api/pojazdy')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        setPojazdy(data); // Ustaw dane pojazdów
+        setFilteredPojazdy(data); // Ustaw przefiltrowane pojazdy
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  };
+
+  // Wywołaj fetchVehicles w useEffect
+  useEffect(() => {
+    fetchVehicles();
+  }, []);
+
+
 
 
   // const openModal = () => {
@@ -122,6 +129,7 @@ const Dashboard = () => {
         diesel: checked,
         gaz: checked,
         hybryda: checked,
+        elektryczny: checked,
       });
     } else {
       setFuelTypes((prev) => ({
@@ -140,6 +148,8 @@ const Dashboard = () => {
       benzyna: false,
       diesel: false,
       gaz: false,
+      hybryda: false,
+      elektryczny: false,
     });
   };
 
@@ -235,7 +245,7 @@ const Dashboard = () => {
     const typNormalized = (pojazd.typ || "").toLowerCase(); // Normalizuj do małych liter
     return {
       ...pojazd,
-      typ: typNormalized === "motor" ? "Motocykl" : "Samochód",
+      typ: typNormalized === "motocykl" ? "Motocykl" : "Samochód",
     };
   });
 
@@ -265,13 +275,16 @@ const Dashboard = () => {
       // Przykład logiki filtrowania
       const keyword = document.querySelector('.search-input').value.toLowerCase(); // Słowo kluczowe
       const vin = document.querySelector('#vin').value.toLowerCase(); // VIN
-      const registrationNumber = document.querySelector('#registrationNumber').value.toLowerCase(); // Numer rejestracyjny
+      const registrationNumber = document.querySelector('#registrationNumber').value.toLowerCase();
 
       if (
         registrationNumber &&
+        pojazd.numerRejestracyjny && // Dodaj sprawdzenie, czy numer rejestracyjny istnieje
         !pojazd.numerRejestracyjny.toLowerCase().includes(registrationNumber)
       )
         return false;
+
+
 
       if (keyword && !(
         pojazd.marka.toLowerCase().includes(keyword) ||
@@ -306,7 +319,7 @@ const Dashboard = () => {
     setYearTo(null);
     setMileageFrom(null);
     setMileageTo(null);
-    setFuelTypes({ benzyna: false, diesel: false, gaz: false });
+    setFuelTypes({ benzyna: false, diesel: false, gaz: false, hybryda: false, elektryczny: false, });
     setSelectedBrand(null);
     setSelectedModel(null);
     setSelectedBodyType(null);
@@ -358,6 +371,7 @@ const Dashboard = () => {
           />
           <input type="text" placeholder="VIN" className="search-input" id="vin" />
           <input type="text" placeholder="Numer rejestracyjny" className="search-input" id="registrationNumber" />
+
           <div className="search-input-group">
             {/* Rok produkcji od */}
             <div className="select-wrapper">
@@ -759,7 +773,7 @@ const Dashboard = () => {
                 { value: "Hatchback", label: "Hatchback" },
                 { value: "SUV", label: "SUV" },
                 { value: "Coupe", label: "Coupe" },
-                { value: "Motor", label: "Motor" },
+                { value: "Motocykl", label: "Motocykl" },
               ]}
               placeholder="Typ nadwozia"
               isClearable
@@ -809,7 +823,10 @@ const Dashboard = () => {
           </div>
           {showVehicleForm && (
             <div id="add-vehicle-modal-root">
-              <AddVehicleForm onClose={handleCloseForm} />
+              <AddVehicleForm
+                onVehicleAdded={fetchVehicles}
+                onClose={handleCloseForm} />
+
             </div>
           )}
 
@@ -884,16 +901,23 @@ const Dashboard = () => {
           ))}
         </div>
 
+
+
         {selectedVehicle && (
           <VehicleDetailsModal
             vehicle={selectedVehicle}
             onClose={handleCloseDetails}
             onUpdate={handleUpdateVehicle}
-            ubezpieczenia={ubezpieczenia.filter(
-              (ubezpieczenie) => ubezpieczenie.vin === selectedVehicle.vin
-            )}
           />
         )}
+        {selectedVehicle && (
+          <VehicleDetailsModal
+            vehicle={selectedVehicle}
+            onClose={handleCloseDetails}
+            onUpdate={fetchVehicles} // Przekaż funkcję aktualizacji
+          />
+        )}
+
 
 
 

@@ -1,8 +1,60 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./VehicleDetailsModal.css";
+import CreatableSelect from "react-select/creatable";
 
-const ServiceHistoryModal = ({ history, onClose, onUpdate }) => {
+const customSelectStyles = {
+    control: (base) => ({
+        ...base,
+        border: '1px solid #ccc',
+        borderRadius: '8px',
+        padding: '4px',
+        fontSize: '14px',
+        boxShadow: 'none',
+        '&:hover': {
+            border: '1px solid #888',
+        },
+        marginTop: '8px',
+    }),
+    placeholder: (base) => ({
+        ...base,
+        color: '#999',
+    }),
+    option: (base, state) => ({
+        ...base,
+        backgroundColor: state.isSelected ? '#17a2b8' : state.isFocused ? '#f1f1f1' : '#fff',
+        color: state.isSelected ? '#fff' : '#333',
+        padding: '10px',
+        fontSize: '14px',
+    }),
+    menu: (base) => ({
+        ...base,
+        borderRadius: '8px',
+        marginTop: '4px',
+        boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)',
+    }),
+    menuList: (base) => ({
+        ...base,
+        maxHeight: '150px', // Ograniczenie maksymalnej wysokości listy
+        overflowY: 'auto',  // Dodanie przewijania w pionie
+    }),
+    singleValue: (base) => ({
+        ...base,
+        color: '#333',
+    }),
+};
+
+
+const ServiceHistoryModal = ({ history = [], onClose, onUpdate }) => {
     const [serviceHistory, setServiceHistory] = useState(history);
+    const [workshopOptions, setWorkshopOptions] = useState([]);
+
+
+    useEffect(() => {
+        fetch('http://localhost:5000/api/warsztaty')
+            .then(response => response.json())
+            .then(data => setWorkshopOptions(data))
+            .catch(error => console.error('Error fetching workshop data:', error));
+    }, []);
 
     const handleAddRecord = () => {
         setServiceHistory([
@@ -49,48 +101,52 @@ const ServiceHistoryModal = ({ history, onClose, onUpdate }) => {
                 </div>
                 {serviceHistory.length === 0 ? (
                     <p className="no-data">Brak danych</p>
-                ) : (
-                    serviceHistory.map((record, index) => (
-                        <div key={index} className="modal-form">
-                            <label>
-                                Data:
-                                <input
-                                    type="date"
-                                    value={record.data}
-                                    onChange={(e) =>
-                                        handleChange(index, "data", e.target.value)
-                                    }
-                                />
-                            </label>
-                            <label>
-                                Opis:
-                                <input
-                                    type="text"
-                                    value={record.opis}
-                                    onChange={(e) =>
-                                        handleChange(index, "opis", e.target.value)
-                                    }
-                                />
-                            </label>
-                            <label>
-                                Warsztat:
-                                <input
-                                    type="text"
-                                    value={record.warsztat}
-                                    onChange={(e) =>
-                                        handleChange(index, "warsztat", e.target.value)
-                                    }
-                                />
-                            </label>
-                            <br />
-                            <button
-                                className="remove-button"
-                                onClick={() => handleRemoveRecord(index)}
-                            >
-                                Usuń
-                            </button>
-                        </div>
-                    )))}
+                ) : (serviceHistory.map((record, index) => (
+                    <div key={index} className="modal-form">
+                        <label>
+                            Data:
+                            <input
+                                type="date"
+                                value={record.data}
+                                onChange={(e) =>
+                                    handleChange(index, "data", e.target.value)
+                                }
+                            />
+                        </label>
+                        <label>
+                            Opis:
+                            <input
+                                type="text"
+                                value={record.opis}
+                                onChange={(e) =>
+                                    handleChange(index, "opis", e.target.value)
+                                }
+                            />
+                        </label>
+
+                        <label>
+                            <CreatableSelect
+                                value={record.warsztat ? { value: record.warsztat, label: record.warsztat } : null}
+                                onChange={(newValue) => handleChange(index, "warsztat", newValue ? newValue.label : '')}
+                                options={workshopOptions.map(workshop => ({ value: workshop.nazwa, label: workshop.nazwa }))}
+                                onCreateOption={(inputValue) => handleChange(index, "warsztat", inputValue)}
+                                placeholder="Wybierz lub dodaj warsztat"
+                                isClearable
+                                styles={customSelectStyles}
+                                formatCreateLabel={(inputValue) => ''}
+                                required
+                            />
+
+                        </label>
+                        <br />
+                        <button
+                            className="remove-button"
+                            onClick={() => handleRemoveRecord(index)}
+                        >
+                            Usuń
+                        </button>
+                    </div>
+                )))}
 
                 <div className="modal-buttons">
                     <button onClick={handleSaveAndClose}>Zapisz</button>

@@ -1,20 +1,202 @@
-[{
-    "_id": "1",
-    "nazwa": "AutoService Plus",
-    "adres": {
-        "ulica": "Warszawska 5",
-        "miasto": "Kraków",
-        "kodPocztowy": "30-001"
+[
+    {
+        "_id": "1",
+        "nazwa": "AutoService Plus",
+        "adres": {
+            "ulica": "Warszawska 5",
+            "miasto": "Kraków",
+            "kodPocztowy": "30-001"
+        },
+        "telefon": "+48123456789"
     },
-    "telefon": "+48123456789"
-},
-{
-    "_id": "2",
-    "nazwa": "MotoFix",
-    "adres": {
-        "ulica": "Piłsudskiego 10",
-        "miasto": "Warszawa",
-        "kodPocztowy": "00-001"
+    {
+        "_id": "2",
+        "nazwa": "MotoFix",
+        "adres": {
+            "ulica": "Piłsudskiego 10",
+            "miasto": "Warszawa",
+            "kodPocztowy": "00-001"
+        },
+        "telefon": "+48221234567"
     },
-    "telefon": "+48221234567"
-}]
+    {
+        "_id": "3",
+        "nazwa": "MotoExpert",
+        "adres": {
+            "ulica": "Lwowska 10",
+            "miasto": "Rzeszów",
+            "kodPocztowy": "35-016"
+        },
+        "telefon": "+48500600700"
+    },
+    {
+        "_id": "4",
+        "nazwa": "GreenCar Service",
+        "adres": {
+            "ulica": "Mickiewicza 60",
+            "miasto": "Kraków",
+            "kodPocztowy": "30-002"
+        },
+        "telefon": "+48421432512"
+    },
+    {
+        "_id": "5",
+        "nazwa": "AutoFix Center",
+        "adres": {
+            "ulica": "Kazimierza 13",
+            "miasto": "Sosnowiec",
+            "kodPocztowy": "32-013"
+        },
+        "telefon": "+48876345123"
+    },
+    {
+        "_id": "6",
+        "nazwa": "BMW Service Center",
+        "adres": {
+            "ulica": "Leśna 5",
+            "miasto": "Bydgoszcz",
+            "kodPocztowy": "12-345"
+        },
+        "telefon": "+48456231233"
+    },
+    {
+        "_id": "7",
+        "nazwa": "MotoStyle",
+        "adres": {
+            "ulica": "Poniatowskiego 54",
+            "miasto": "Bydgoszcz",
+            "kodPocztowy": "72-312"
+        },
+        "telefon": "+48444777123"
+    },
+    {
+        "_id": "8",
+        "nazwa": "Audi Center",
+        "adres": {
+            "ulica": "Mickiewicza 2",
+            "miasto": "Kołobrzeg",
+            "kodPocztowy": "52-115"
+        },
+        "telefon": "+48555123654"
+    },
+    {
+        "_id": "9",
+        "nazwa": "Mercedes-Benz Center",
+        "adres": {
+            "ulica": "Sosnowa 1",
+            "miasto": "Gdańsk",
+            "kodPocztowy": "42-225"
+        },
+        "telefon": "+48999123654"
+    },
+    {
+        "_id": "10",
+        "nazwa": "Volkswagen Service",
+        "adres": {
+            "ulica": "Szpaka 8",
+            "miasto": "Szczecin",
+            "kodPocztowy": "71-122"
+        },
+        "telefon": "+48735837274"
+    },
+    {
+        "_id": "11",
+        "nazwa": "Toyota Center",
+        "adres": {
+            "ulica": "Jana Pawła II 25",
+            "miasto": "Warszawa",
+            "kodPocztowy": "00-854"
+        },
+        "telefon": "+48224443210"
+    },
+    {
+        "_id": "12",
+        "nazwa": "Ford Service",
+        "adres": {
+            "ulica": "Gdańska 12",
+            "miasto": "Gdańsk",
+            "kodPocztowy": "80-852"
+        },
+        "telefon": "+48583456789"
+    },
+    {
+        "_id": "13",
+        "nazwa": "Peugeot Service",
+        "adres": {
+            "ulica": "Krakowska 45",
+            "miasto": "Kraków",
+            "kodPocztowy": "31-425"
+        },
+        "telefon": "+48124321456"
+    },
+    {
+        "_id": "14",
+        "nazwa": "MotoSerwis",
+        "adres": {
+            "ulica": "Leśna 5",
+            "miasto": "Poznań",
+            "kodPocztowy": "60-123"
+        },
+        "telefon": "+48612345678"
+    },
+    {
+        "_id": "15",
+        "nazwa": "RiderService",
+        "adres": {
+            "ulica": "Kościuszki 33",
+            "miasto": "Wrocław",
+            "kodPocztowy": "50-134"
+        },
+        "telefon": "+48712346789"
+    },
+    {
+        "_id": "16",
+        "nazwa": "KawaMoto",
+        "adres": {
+            "ulica": "Zielona 7",
+            "miasto": "Lublin",
+            "kodPocztowy": "20-001"
+        },
+        "telefon": "+48812456789"
+    },
+    {
+        "_id": "17",
+        "nazwa": "BMW Motorrad",
+        "adres": {
+            "ulica": "Nowa 9",
+            "miasto": "Katowice",
+            "kodPocztowy": "40-001"
+        },
+        "telefon": "+48603212345"
+    },
+    {
+        "_id": "18",
+        "nazwa": "Ducati Service",
+        "adres": {
+            "ulica": "Szara 11",
+            "miasto": "Łódź",
+            "kodPocztowy": "90-001"
+        },
+        "telefon": "+48611112222"
+    },
+    {
+        "_id": "19",
+        "nazwa": "MotoTechnik",
+        "adres": {
+            "ulica": "Wrzosowa 21",
+            "miasto": "Opole",
+            "kodPocztowy": "45-001"
+        },
+        "telefon": "+48712345678"
+    },
+    {
+        "_id": "20",
+        "nazwa": "Triumph Moto",
+        "adres": {
+            "ulica": "Parkowa 15",
+            "miasto": "Bydgoszcz",
+            "kodPocztowy": "85-001"
+        },
+        "telefon": "+48751234567"
+    }
+]

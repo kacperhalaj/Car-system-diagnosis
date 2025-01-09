@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./VehicleDetailsModal.css";
 
-const OwnersModal = ({ owners, onClose, onUpdate }) => {
+const OwnersModal = ({ owners = [], onClose, onUpdate }) => {
     const [ownersList, setOwnersList] = useState(owners);
 
     const handleAddOwner = () => {
@@ -30,7 +30,6 @@ const OwnersModal = ({ owners, onClose, onUpdate }) => {
     return (
         <div className="modal-overlay">
             <div className="modal-content">
-
                 <div className="modal-header">
                     <h2>Lista Właścicieli</h2>
                     <div className="close" onClick={onClose}>
@@ -50,57 +49,56 @@ const OwnersModal = ({ owners, onClose, onUpdate }) => {
                 </div>
                 {ownersList.length === 0 ? (
                     <p className="no-data">Brak danych</p>
-                ) : (
-                    ownersList.map((owner, index) => (
-                        <div key={index} className="modal-form">
-                            <label>
-                                Imię:
-                                <input
-                                    type="text"
-                                    value={owner.imie}
-                                    onChange={(e) =>
-                                        handleChange(index, "imie", e.target.value)
-                                    }
-                                />
-                            </label>
-                            <label>
-                                Nazwisko:
-                                <input
-                                    type="text"
-                                    value={owner.nazwisko}
-                                    onChange={(e) =>
-                                        handleChange(index, "nazwisko", e.target.value)
-                                    }
-                                />
-                            </label>
-                            <label>
-                                Data Zakupu:
-                                <input
-                                    type="date"
-                                    value={owner.dataZakupu}
-                                    onChange={(e) =>
-                                        handleChange(index, "dataZakupu", e.target.value)
-                                    }
-                                />
-                            </label>
-                            <label>
-                                Data Sprzedaży:
-                                <input
-                                    type="date"
-                                    value={owner.dataSprzedazy || ""}
-                                    onChange={(e) =>
-                                        handleChange(index, "dataSprzedazy", e.target.value)
-                                    }
-                                />
-                            </label>
-                            <button
-                                className="remove-button"
-                                onClick={() => handleRemoveOwner(index)}
-                            >
-                                Usuń
-                            </button>
-                        </div>
-                    )))}
+                ) : (ownersList.map((owner, index) => (
+                    <div key={index} className="modal-form">
+                        <label>
+                            Imię:
+                            <input
+                                type="text"
+                                value={owner.imie}
+                                onChange={(e) =>
+                                    handleChange(index, "imie", e.target.value)
+                                }
+                            />
+                        </label>
+                        <label>
+                            Nazwisko:
+                            <input
+                                type="text"
+                                value={owner.nazwisko}
+                                onChange={(e) =>
+                                    handleChange(index, "nazwisko", e.target.value)
+                                }
+                            />
+                        </label>
+                        <label>
+                            Data Zakupu:
+                            <input
+                                type="date"
+                                value={owner.dataZakupu}
+                                onChange={(e) =>
+                                    handleChange(index, "dataZakupu", e.target.value)
+                                }
+                            />
+                        </label>
+                        <label>
+                            Data Sprzedaży:
+                            <input
+                                type="date"
+                                value={owner.dataSprzedazy || ""}
+                                onChange={(e) =>
+                                    handleChange(index, "dataSprzedazy", e.target.value)
+                                }
+                            />
+                        </label>
+                        <button
+                            className="remove-button"
+                            onClick={() => handleRemoveOwner(index)}
+                        >
+                            Usuń
+                        </button>
+                    </div>
+                )))}
 
                 <div className="modal-buttons">
                     <button onClick={handleSaveAndClose}>Zapisz</button>

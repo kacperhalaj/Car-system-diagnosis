@@ -27,6 +27,173 @@
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+
+/* Przyciski w oknie modalnym */
+.modal-buttons button {
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    min-width: 109px;
+}
+
+/* Nowe style dla przycisku zamykania z efektem LED */
+.close {
+    --size: 45px;
+    --border-size: 3px;
+    --border-color: #ffffff;
+    --speed: 0.85s;
+    width: var(--size);
+    height: var(--size);
+    position: relative;
+    background: #17a2b8;
+    /* Kolor LED */
+    border-radius: 50%;
+    box-shadow: 0 0 20px -5px rgba(23, 162, 184, 0.7);
+    /* Zwiększony cień w kolorze LED */
+    transition: 0.25s ease-in-out;
+    cursor: pointer;
+    animation: fade-in var(--speed) ease-out 0.25s both;
+    overflow: hidden;
+    /* margin-bottom: 20px; */
+    margin-top: -30px;
+}
+
+/* Animacja okręgu (obręczy) */
+.close .circle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 3;
+}
+
+.close .circle path {
+    stroke: var(--border-color);
+    fill: none;
+    stroke-width: calc(var(--border-size) / 2);
+    stroke-linecap: round;
+    animation: progress var(--speed) ease-out 0.25s both;
+}
+
+/* Linie w kształcie X w środku przycisku */
+.close span {
+    display: block;
+    width: calc((var(--size) / 4) - 2px);
+    height: var(--border-size);
+    background: var(--border-color);
+    box-shadow: 0 0 10px rgba(23, 162, 184, 0.7);
+    /* Zwiększony cień w kolorze LED */
+    border-radius: 20px;
+    position: absolute;
+    --padding: calc(var(--size) / 3);
+    transition: 0.25s ease-in-out;
+    animation: slide-in var(--speed) ease-in-out 0.25s both;
+    z-index: 2;
+}
+
+/* Pozycjonowanie linii X */
+.close span:nth-child(1) {
+    top: calc(var(--padding) - (var(--border-size) / 2));
+    left: var(--padding);
+    transform: rotate(45deg);
+    transform-origin: top left;
+}
+
+.close span:nth-child(2) {
+    top: calc(var(--padding) - (var(--border-size) / 2));
+    right: var(--padding);
+    transform: rotate(-45deg);
+    transform-origin: top right;
+}
+
+.close span:nth-child(3) {
+    bottom: calc(var(--padding) - (var(--border-size) / 2));
+    left: var(--padding);
+    transform: rotate(-45deg);
+    transform-origin: bottom left;
+}
+
+.close span:nth-child(4) {
+    bottom: calc(var(--padding) - (var(--border-size) / 2));
+    right: var(--padding);
+    transform: rotate(45deg);
+    transform-origin: bottom right;
+}
+
+/* Stylizacja hover z efektem rozświetlenia */
+.close:hover {
+    background: #138496;
+    /* Ciemniejszy odcień LED */
+    box-shadow: 0 0 30px 5px rgba(23, 162, 184, 0.8);
+    /* Efekt świecenia wokół przycisku */
+}
+
+.close:hover span {
+    width: calc(var(--size) / 4);
+}
+
+/* Animacja wejścia przycisku */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: scale(1.1);
+    }
+}
+
+/* Animacja dla okręgu (kółka postępu) */
+@keyframes progress {
+    from {
+        stroke-dasharray: 0 100;
+    }
+}
+
+/* Animacja przesuwania linii X */
+@keyframes slide-in {
+    from {
+        width: 0;
+    }
+}
+
+.no-data {
+    text-align: center;
+    color: #6c757d;
+    font-size: 1rem;
+    margin-top: 20px;
+}
+
+
+.modal-content h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-align: left;
+    flex-grow: 1;
+    margin-bottom: 2rem;
+    /* Pozwala h2 zająć dostępne miejsce */
+}
+
+/* Przyciski i tytuł w jednej linii */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* Stylowanie przycisków */
+.modal-header button {
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 /* Przyciski w oknie modalnym */
 .modal-buttons button {
     padding: 10px 20px;

@@ -2,6 +2,12 @@ import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import './AddVehicleForm.css';
+import ServiceHistoryModal from './ServiceHistoryModal';
+import OwnersModal from './OwnersModal';
+import InsuranceModal from './InsuranceModal';
+import CustomAlert from './CustomAlert';
+import Alert from './Alert';
+
 
 
 const customSelectStyles = {
@@ -59,6 +65,7 @@ const bodyTypeOptions = [
     { value: 'SUV', label: 'SUV' },
     { value: 'Kombi', label: 'Kombi' },
     { value: 'Kabriolet', label: 'Kabriolet' },
+    { value: 'Motocykl', label: 'Motocykl' },
 ];
 
 const makeOptions = [
@@ -88,7 +95,7 @@ const modelsByMake = {
     Honda: ['Civic', 'Accord', 'CR-V'],
 };
 
-const AddVehicleForm = ({ onClose }) => {
+const AddVehicleForm = ({ onVehicleAdded, onClose }) => {
     const currentYear = new Date().getFullYear();
     const yearOptions = Array.from({ length: currentYear - 1899 }, (_, i) => ({
         value: currentYear - i,
@@ -96,27 +103,33 @@ const AddVehicleForm = ({ onClose }) => {
     })).filter(option => option.value >= 1990 || option.value % 10 === 0); // Rok od 1990 lub co 10 lat
 
     const initialFormState = {
-        plateNumber: '',
+        numerRejestracyjny: '',
         vin: '',
-        year: '',
-        mileage: '',
-        fuelType: '',
-        make: '',
+        rokProdukcji: '',
+        przebieg: '',
+        rodzajPaliwa: '',
+        marka: '',
         model: '',
-        bodyType: '',
+        typ: '',
+        historiaSerwisowa: [],
+        wlasciciele: [],
+        ubezpieczenie: []
     };
 
     const [vehicleData, setVehicleData] = useState(initialFormState);
     const [modelOptions, setModelOptions] = useState([]);
+    const [showServiceHistoryModal, setShowServiceHistoryModal] = useState(false);
+    const [showOwnersModal, setShowOwnersModal] = useState(false);
+    const [showInsuranceModal, setShowInsuranceModal] = useState(false);
 
     // Update model options when make changes
     useEffect(() => {
-        if (vehicleData.make) {
-            setModelOptions(modelsByMake[vehicleData.make] || []);
+        if (vehicleData.marka) {
+            setModelOptions(modelsByMake[vehicleData.marka] || []);
         } else {
             setModelOptions([]);
         }
-    }, [vehicleData.make]);
+    }, [vehicleData.marka]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -124,6 +137,32 @@ const AddVehicleForm = ({ onClose }) => {
             ...prevState,
             [name]: value,
         }));
+    };
+
+    // Funkcja do dodawania nowego rekordu historii serwisowej
+    const handleAddServiceHistory = (history) => {
+        setVehicleData(prevState => ({
+            ...prevState,
+            historiaSerwisowa: history,
+        }));
+        setShowServiceHistoryModal(false); // Zamknij modal po dodaniu
+    };
+
+    // Funkcja do dodawania nowego właściciela
+    const handleAddOwners = (owners) => {
+        setVehicleData(prevState => ({
+            ...prevState,
+            wlasciciele: owners,
+        }));
+        setShowOwnersModal(false); // Zamknij modal po dodaniu
+    };
+
+    const handleAddInsurance = (insurance) => {
+        setVehicleData(prevState => ({
+            ...prevState,
+            ubezpieczenie: insurance,
+        }));
+        setShowInsuranceModal(false); // Zamknij modal po dodaniu
     };
 
     const handleSelectChange = (selectedOption, { name }) => {
@@ -140,25 +179,70 @@ const AddVehicleForm = ({ onClose }) => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const [showAlert2, setShowAlert2] = useState(false); // Stan do kontrolowania wyświetlania alertu
+    const [alertMessage2, setAlertMessage2] = useState(''); // Wiadomość do wyświetlenia w alercie
+
+
+    // Funkcja do zamknięcia alertu
+    const handleCloseAlert = () => {
+        setShowAlert2(false);
+    };
+
+    const [errorMessage, setErrorMessage] = useState('');
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Sprawdzenie, czy wszystkie pola zostały wypełnione
         if (
-            !vehicleData.make ||
+            !vehicleData.marka ||
             !vehicleData.model ||
-            !vehicleData.bodyType ||
-            !vehicleData.fuelType ||
-            !vehicleData.year ||
-            !vehicleData.mileage ||
-            !vehicleData.plateNumber ||
+            !vehicleData.typ ||
+            !vehicleData.rodzajPaliwa ||
+            !vehicleData.rokProdukcji ||
+            !vehicleData.przebieg ||
+            !vehicleData.numerRejestracyjny ||
             !vehicleData.vin
         ) {
-            alert('Proszę wypełnić wszystkie pola.');
+            setErrorMessage('Proszę wypełnić wszystkie pola.');
             return;
         }
 
-        console.log('Dodany pojazd:', vehicleData);
-        onClose(); // Zamknięcie modalu po dodaniu pojazdu
+        try {
+            const response = await fetch('http://localhost:5000/api/pojazdy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(vehicleData),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Błąd podczas dodawania pojazdu');
+            }
+
+            const addedVehicle = await response.json();
+            console.log('Dodany pojazd:', addedVehicle);
+
+            if (onVehicleAdded) {
+                onVehicleAdded(); // Wywołanie funkcji odświeżającej dane w Dashboard
+            }
+
+            // onClose(); // Zamknięcie modalu po dodaniu pojazdu
+            setAlertMessage2('Pojazd został dodany pomyślnie.');
+            setShowAlert2(true);
+
+            // Zamknij modal po 1 sekundach
+            setTimeout(() => {
+                onClose();
+            }, 1000);
+        } catch (error) {
+            console.error('Error:', error);
+            setErrorMessage('Pojazd o podanym numerze VIN już istnieje w bazie.');
+        }
     };
+
+
 
     const handleResetForm = () => {
         setVehicleData(initialFormState); // Resetowanie formularza do początkowych wartości
@@ -172,8 +256,9 @@ const AddVehicleForm = ({ onClose }) => {
     const parseMileage = (value) => {
         const rawValue = value.replace(/\s/g, ''); // Usuń spacje
         const numericValue = parseInt(rawValue, 10);
-        return isNaN(numericValue) || numericValue < 0 ? '' : numericValue; // Zwróć tylko liczby >= 0
+        return isNaN(numericValue) || numericValue < 0 ? '' : numericValue.toString(); // Zwróć wartość jako string bez zer wiodących
     };
+
 
 
     return (
@@ -201,11 +286,11 @@ const AddVehicleForm = ({ onClose }) => {
                     <label>
                         Marka pojazdu:
                         <CreatableSelect
-                            name="make"
-                            value={vehicleData.make ? { value: vehicleData.make, label: vehicleData.make } : null}
+                            name="marka"
+                            value={vehicleData.marka ? { value: vehicleData.marka, label: vehicleData.marka } : null}
                             onChange={(newValue) => setVehicleData(prevState => ({
                                 ...prevState,
-                                make: newValue ? newValue.label : '', // Przypisujemy label
+                                marka: newValue ? newValue.label : '', // Przypisujemy label
                             }))}
                             options={makeOptions}
                             styles={customSelectStyles}
@@ -213,7 +298,7 @@ const AddVehicleForm = ({ onClose }) => {
                             isClearable
                             onCreateOption={(inputValue) => handleCustomValue(inputValue, (value) => setVehicleData(prevState => ({
                                 ...prevState,
-                                make: value.label,
+                                marka: value.label,
                             })))}
                             required
                             formatCreateLabel={(inputValue) => ''}  // Ukrycie napisu "Create"
@@ -243,8 +328,8 @@ const AddVehicleForm = ({ onClose }) => {
                     <label>
                         Typ nadwozia:
                         <Select
-                            name="bodyType"
-                            value={vehicleData.bodyType ? { value: vehicleData.bodyType, label: vehicleData.bodyType } : null}
+                            name="typ"
+                            value={vehicleData.typ ? { value: vehicleData.typ, label: vehicleData.typ } : null}
                             onChange={handleSelectChange}
                             options={bodyTypeOptions}
                             styles={customSelectStyles}
@@ -256,8 +341,8 @@ const AddVehicleForm = ({ onClose }) => {
                     <label>
                         Rodzaj paliwa:
                         <Select
-                            name="fuelType"
-                            value={vehicleData.fuelType ? { value: vehicleData.fuelType, label: vehicleData.fuelType } : null}
+                            name="rodzajPaliwa"
+                            value={vehicleData.rodzajPaliwa ? { value: vehicleData.rodzajPaliwa, label: vehicleData.rodzajPaliwa } : null}
                             onChange={handleSelectChange}
                             options={fuelOptions}
                             styles={customSelectStyles}
@@ -270,8 +355,8 @@ const AddVehicleForm = ({ onClose }) => {
                     <label>
                         Rok produkcji:
                         <Select
-                            name="year"
-                            value={vehicleData.year ? { value: vehicleData.year, label: vehicleData.year.toString() } : null}
+                            name="rokProdukcji"
+                            value={vehicleData.rokProdukcji ? { value: vehicleData.rokProdukcji, label: vehicleData.rokProdukcji.toString() } : null}
                             onChange={handleSelectChange}
                             options={yearOptions}
                             styles={customSelectStyles}
@@ -283,14 +368,14 @@ const AddVehicleForm = ({ onClose }) => {
                     <label>
                         Przebieg:
                         <CreatableSelect
-                            name="mileage"
+                            name="przebieg"
                             value={
-                                vehicleData.mileage
+                                vehicleData.przebieg
                                     ? {
-                                        value: vehicleData.mileage,
+                                        value: vehicleData.przebieg,
                                         label: (
                                             <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                                                <span style={{ textAlign: 'left', flex: 1 }}>{formatMileage(vehicleData.mileage)}</span>
+                                                <span style={{ textAlign: 'left', flex: 1 }}>{formatMileage(vehicleData.przebieg)}</span>
                                                 <span style={{ textAlign: 'right' }}>km</span>
                                             </div>
                                         ),
@@ -301,7 +386,7 @@ const AddVehicleForm = ({ onClose }) => {
                                 const numericValue = parseMileage(selectedOption?.value || '');
                                 setVehicleData((prevState) => ({
                                     ...prevState,
-                                    mileage: numericValue,
+                                    przebieg: numericValue,
                                 }));
                             }}
                             onCreateOption={(inputValue) => {
@@ -309,7 +394,7 @@ const AddVehicleForm = ({ onClose }) => {
                                 if (numericValue !== '') {
                                     setVehicleData((prevState) => ({
                                         ...prevState,
-                                        mileage: numericValue,
+                                        przebieg: numericValue,
                                     }));
                                 }
                             }}
@@ -358,13 +443,14 @@ const AddVehicleForm = ({ onClose }) => {
                             }}
                         />
 
+
                     </label>
                     <label>
                         Numer rejestracyjny:
                         <input
                             type="text"
-                            name="plateNumber"
-                            value={vehicleData.plateNumber}
+                            name="numerRejestracyjny"
+                            value={vehicleData.numerRejestracyjny}
                             onChange={handleInputChange}
                             required
                         />
@@ -386,7 +472,39 @@ const AddVehicleForm = ({ onClose }) => {
                         <button type="submit" className="submit-btn">Dodaj pojazd</button>
                     </div>
                 </form>
+                {errorMessage && (
+                    <CustomAlert
+                        message={errorMessage}
+                        onClose={() => setErrorMessage('')}
+                    />
+                )}
+                {showAlert2 && <Alert message={alertMessage2} onClose={handleCloseAlert} />}
             </div>
+
+            {showServiceHistoryModal && (
+                <ServiceHistoryModal
+                    history={vehicleData.historiaSerwisowa || []}
+                    onClose={() => setShowServiceHistoryModal(false)}
+                    onUpdate={handleAddServiceHistory}
+                />
+            )}
+
+            {showOwnersModal && (
+                <OwnersModal
+                    owners={vehicleData.wlasciciele || []}
+                    onClose={() => setShowOwnersModal(false)}
+                    onUpdate={handleAddOwners}
+                />
+            )}
+
+            {showInsuranceModal && (
+                <InsuranceModal
+                    insurance={vehicleData.ubezpieczenie || []} // Upewnij się, że przekazujesz pustą tablicę, jeśli nie ma ubezpieczenia
+                    onClose={() => setShowInsuranceModal(false)}
+                    onUpdate={handleAddInsurance}
+                />
+            )}
+
         </div>
     );
 };
