@@ -7,7 +7,7 @@
     "model": "Corsa",
     "rodzajPaliwa": "Diesel",
     "rokProdukcji": 2000,
-    "typ": "Samochód",
+    "typ": "SUV",
     "liczbaDrzwi": 3,
     "kolor": "Czerwony",
     "przebieg": 150000,
@@ -84,7 +84,7 @@
     "model": "Corolla",
     "rodzajPaliwa": "Hybryda",
     "rokProdukcji": 2018,
-    "typ": "Osobowy",
+    "typ": "Sedan",
     "liczbaDrzwi": 5,
     "kolor": "Biały",
     "przebieg": 60000,
@@ -114,7 +114,7 @@
     "model": "Focus",
     "rodzajPaliwa": "Benzyna",
     "rokProdukcji": 2012,
-    "typ": "Osobowy",
+    "typ": "Sedan",
     "liczbaDrzwi": 5,
     "kolor": "Czarny",
     "przebieg": 120000,
@@ -245,7 +245,7 @@
     "model": "A3",
     "rodzajPaliwa": "Benzyna",
     "rokProdukcji": 2020,
-    "typ": "Osobowy",
+    "typ": "Sedan",
     "liczbaDrzwi": 3,
     "kolor": "Czerwony",
     "przebieg": 30000,
@@ -712,7 +712,7 @@
     "model": "Altima",
     "rodzajPaliwa": "Benzyna",
     "rokProdukcji": 2021,
-    "typ": "Osobowy",
+    "typ": "Sedan",
     "liczbaDrzwi": 4,
     "kolor": "Czerwony",
     "przebieg": 25000,
@@ -742,7 +742,7 @@
     "model": "Model 3",
     "rodzajPaliwa": "Elektryczny",
     "rokProdukcji": 2020,
-    "typ": "Osobowy",
+    "typ": "Sedan",
     "liczbaDrzwi": 4,
     "kolor": "Szary",
     "przebieg": 30000,
@@ -772,7 +772,7 @@
     "model": "A4",
     "rodzajPaliwa": "Diesel",
     "rokProdukcji": 2017,
-    "typ": "Osobowy",
+    "typ": "Sedan",
     "liczbaDrzwi": 4,
     "kolor": "Niebieski",
     "przebieg": 80000,
@@ -801,8 +801,8 @@
     "marka": "Opel",
     "model": "Corsa",
     "rodzajPaliwa": "Diesel",
-    "rokProdukcji": 2000,
-    "typ": "Sedan",
+    "rokProdukcji": "2000",
+    "typ": "SUV",
     "liczbaDrzwi": 3,
     "kolor": "Czerwony",
     "przebieg": 150000,
@@ -816,13 +816,20 @@
     "model": "X5",
     "rodzajPaliwa": "Diesel",
     "rokProdukcji": 2010,
-    "typ": "Sedan",
+    "typ": "SUV",
     "liczbaDrzwi": 5,
     "kolor": "Czarny",
     "przebieg": 10000,
     "pojemnoscSilnika": 1800,
     "_id": 28,
-    "ubezpieczenie": []
+    "ubezpieczenie": [],
+    "historiaSerwisowa": [
+      {
+        "data": "2023-05-29",
+        "opis": "Wymiana rozrządu oraz filtru paliwa",
+        "warsztat": "BMW Service Center"
+      }
+    ]
   },
   {
     "numerRejestracyjny": "R2XDDD",
@@ -832,7 +839,7 @@
     "rodzajPaliwa": "Diesel",
     "marka": "Mercedes",
     "model": "A-Class",
-    "typ": "Samochód",
+    "typ": "SUV",
     "_id": 29,
     "liczbaDrzwi": "3",
     "kolor": "Zielony",
@@ -842,12 +849,12 @@
   {
     "numerRejestracyjny": "R3AUTO",
     "vin": "34DF66GD84GHHAE73",
-    "rokProdukcji": 2022,
+    "rokProdukcji": "1957",
     "przebieg": 100000,
     "rodzajPaliwa": "Hybrydowy",
     "marka": "Toyota",
     "model": "Yaris",
-    "typ": "Samochód",
+    "typ": "SUV",
     "_id": 30,
     "ubezpieczenie": [
       {
@@ -861,16 +868,16 @@
   {
     "numerRejestracyjny": "LTM45022",
     "vin": "2GDG534GFD22",
-    "rokProdukcji": "2007",
+    "rokProdukcji": "1980",
     "przebieg": 270000,
     "rodzajPaliwa": "Diesel",
     "marka": "Suzuki",
     "model": "SX4",
-    "typ": "Samochód",
+    "typ": "SUV",
     "_id": 31,
     "liczbaDrzwi": "5",
     "kolor": "Czarny",
-    "pojemnoscSilnika": "1895",
+    "pojemnoscSilnika": "1897",
     "ubezpieczenie": [
       {
         "firmaUbezpieczeniowa": "AXA",
@@ -878,41 +885,25 @@
         "dataRozpoczecia": "2003-02-12",
         "dataZakonczenia": "2004-02-12"
       }
-    ]
-  },
-  {
-    "numerRejestracyjny": "RST1234",
-    "vin": "resfd4123xdadx",
-    "rokProdukcji": 2023,
-    "przebieg": 10000,
-    "rodzajPaliwa": "Elektryczny",
-    "marka": "Audi",
-    "model": "A4",
-    "typ": "Samochód",
-    "historiaSerwisowa": [
-      {
-        "data": "2024-12-18",
-        "opis": "Wymiana oopon",
-        "warsztat": "Waki Taki"
-      }
     ],
     "wlasciciele": [
       {
-        "imie": "Janusz",
-        "nazwisko": "Pywsko",
-        "dataZakupu": "2004-04-21",
+        "imie": "Kacper",
+        "nazwisko": "Ligeza",
+        "dataZakupu": "2021-05-20",
         "dataSprzedazy": ""
       }
     ],
-    "_id": 32,
-    "kolor": "Czarny",
-    "pojemnoscSilnika": "1900",
-    "ubezpieczenie": [
+    "historiaSerwisowa": [
       {
-        "firmaUbezpieczeniowa": "wEDF",
-        "typUbezpieczenia": "XFCVB",
-        "dataRozpoczecia": "",
-        "dataZakonczenia": ""
+        "data": "2024-09-26",
+        "opis": "Wymiana filtra paliwa",
+        "warsztat": "MotoExpert"
+      },
+      {
+        "data": "2024-12-13",
+        "opis": "Wymiana filtra powietrza",
+        "warsztat": "AutoService Plus"
       }
     ]
   },
@@ -924,7 +915,7 @@
     "rodzajPaliwa": "Diesel",
     "marka": "Volkswagen",
     "model": "Scirocco",
-    "typ": "Samochód",
+    "typ": "SUV",
     "historiaSerwisowa": [
       {
         "data": "",
@@ -956,11 +947,11 @@
     "numerRejestracyjny": "RST12345",
     "vin": "vindlapojazduezzz",
     "rokProdukcji": 2022,
-    "przebieg": 140000,
+    "przebieg": "150000",
     "rodzajPaliwa": "Diesel",
     "marka": "Volkswagen",
     "model": "Scirocco",
-    "typ": "Samochód",
+    "typ": "SUV",
     "historiaSerwisowa": [
       {
         "data": "3221-02-21",
@@ -988,5 +979,18 @@
     "liczbaDrzwi": "3",
     "kolor": "Czarny",
     "pojemnoscSilnika": "1396"
+  },
+  {
+    "numerRejestracyjny": "32",
+    "vin": "432",
+    "rokProdukcji": 2025,
+    "przebieg": "0",
+    "rodzajPaliwa": "Diesel",
+    "marka": "Audi",
+    "model": "A4",
+    "typ": "Sedan",
+    "historiaSerwisowa": [],
+    "wlasciciele": [],
+    "ubezpieczenie": []
   }
 ]

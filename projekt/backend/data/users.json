@@ -7,30 +7,9 @@
   },
   {
     "_id": 2,
-    "login": "ngb66928@kisoq.com",
-    "password": "p14luddb",
+    "login": "blablabla",
+    "password": "co3cgfr8",
     "rola": "user",
     "name": "Yanusj"
-  },
-  {
-    "_id": 3,
-    "login": "stach@ds2.pl",
-    "password": "dsdauhsdfuihsdfbui",
-    "rola": "user",
-    "name": "Dżanuszowski"
-  },
-  {
-    "_id": 4,
-    "login": "cos@cos.pl",
-    "password": "haslo",
-    "rola": "user",
-    "name": "ksdksd"
-  },
-  {
-    "_id": 5,
-    "login": "test@test.pl",
-    "password": "2pcpokpn",
-    "rola": "user",
-    "name": "test"
   }
 ]

@@ -111,8 +111,8 @@ router.post('/send-message', (req, res) => {
             if (err) {
                 return res.status(500).json({ message: 'Error saving new password' });
             }
-            sendEmail(mail, 'Password Reset', 'Your password has been reset.', newPassword);
-            res.status(200).json({ message: 'Password reset successfully' });
+            sendEmail(mail, 'Resetowanie hasła', 'Twoje hasło zostało zresetowane.', newPassword);
+            res.status(200).json({ message: 'Hasło zostało pomyślnie zresetowane' });
         });
     });
 });

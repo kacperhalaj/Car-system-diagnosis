@@ -3,37 +3,16 @@ import { IoChevronDown, IoCloseCircleOutline } from "react-icons/io5";
 import "./Dashboard.css";
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
-
-
 import AddVehicleForm from './AddVehicleForm';
 import VehicleDetailsModal from "./VehicleDetailsModal";
-
-
+import StatisticsModal from "./StatisticsModal";
 
 const Dashboard = () => {
 
+  const [stats, setStats] = useState({}); // Stan dla statystyk
+  const [showStatsModal, setShowStatsModal] = useState(false); // Stan dla modala statystyk
   const [pojazdy, setPojazdy] = useState([]); // Stan dla pojazdów
   const [filteredPojazdy, setFilteredPojazdy] = useState([]); // Stan dla przefiltrowanych pojazdów
-  //const [selectedVehicle, setSelectedVehicle] = useState(null); // Stan dla wybranego pojazdu
-
-
-  // const [ubezpieczenia, setUbezpieczenia] = useState([]);
-  // useEffect(() => {
-  //   // Odczyt danych z pliku JSON
-  //   fetch('http://localhost:5000/api/ubezpieczenia')
-  //     .then(response => {
-  //       if (!response.ok) {
-  //         throw new Error(`HTTP error! status: ${response.status}`);
-  //       }
-  //       return response.json();
-  //     })
-  //     .then(data => {
-  //       setUbezpieczenia(data);
-  //     })
-  //     .catch(error => console.error('Error fetching insurance data:', error));
-  // }, []);
-
-
   const [mileageFrom, setMileageFrom] = useState(""); // Stan dla "Przebieg od"
   const [mileageTo, setMileageTo] = useState(""); // Stan dla "Przebieg do"
   const [fuelTypes, setFuelTypes] = useState({
@@ -92,14 +71,6 @@ const Dashboard = () => {
 
 
 
-
-  // const openModal = () => {
-  //   setIsModalOpen(true);
-  // };
-
-  // const closeModal = () => {
-  //   setIsModalOpen(false);
-  // };
   const [showVehicleForm, setShowVehicleForm] = useState(false);
 
   const handleOpenForm = () => setShowVehicleForm(true);
@@ -192,12 +163,6 @@ const Dashboard = () => {
   };
 
 
-  // const handleMileageChange = (e, setter) => {
-  //   const value = e.target.value.replace(/[^\d]/g, ""); // Usuń spacje i znaki
-  //   setter(value); // Ustaw czystą wartość w stanie
-  // };
-
-
   // Obsługa zmiany wartości "Przebieg od"
   const handleMileageFromChange = (option) => {
     if (mileageTo && option?.value > mileageTo.value) {
@@ -245,18 +210,18 @@ const Dashboard = () => {
     const typNormalized = (pojazd.typ || "").toLowerCase(); // Normalizuj do małych liter
     return {
       ...pojazd,
-      typ: typNormalized === "motocykl" ? "Motocykl" : "Samochód",
+      typ: typNormalized === "motocykl" ? "Motocykl" : pojazd.typ,
     };
   });
 
   // Liczba wszystkich pojazdów w każdej kategorii
-  const totalCars = pojazdyWithType.filter((p) => p.typ === "Samochód").length;
+  const totalCars = pojazdyWithType.filter((p) => p.typ !== "Motocykl").length;
   const totalMotorcycles = pojazdyWithType.filter((p) => p.typ === "Motocykl").length;
 
   // Filtrowanie pojazdów na podstawie aktywnego filtra
   const filteredByCategory = pojazdyWithType.filter((pojazd) => {
     if (activeFilter === "all") return true; // Wszystkie pojazdy
-    if (activeFilter === "cars") return pojazd.typ === "Samochód";
+    if (activeFilter === "cars") return pojazd.typ !== "Motocykl";
     if (activeFilter === "motorcycles") return pojazd.typ === "Motocykl";
     return true;
   });
@@ -334,13 +299,26 @@ const Dashboard = () => {
 
   // Sortowanie danych przed paginacją
   const sortedPojazdy = filteredByCategory.sort((a, b) => {
-    // Jeśli _id jest liczbą, rzutuj na liczbę i sortuj
-    if (!isNaN(a._id) && !isNaN(b._id)) {
-      return parseInt(b._id, 10) - parseInt(a._id, 10);
-    }
-    // Jeśli _id jest stringiem, sortuj alfanumerycznie
-    return b._id.toString().localeCompare(a._id.toString());
+    // // Jeśli _id jest liczbą, rzutuj na liczbę i sortuj
+    // if (!isNaN(a._id) && !isNaN(b._id)) {
+    //   return parseInt(b._id, 10) - parseInt(a._id, 10);
+    // }
+
+    return parseInt(b._id, 10) - parseInt(a._id, 10);
+
+    // // Jeśli _id jest stringiem, sortuj alfanumerycznie
+    // else {
+    //   return b._id.toString().localeCompare(a._id.toString());
+    // }
   });
+  //
+  // // Sortowanie danych przed paginacją
+  //   const sortedPojazdy = filteredByCategory.sort((a, b) => {
+  //     const aValue = a._id ? a._id.toString() : '';
+  //     const bValue = b._id ? b._id.toString() : '';
+  //     return bValue.localeCompare(aValue);
+  //   });
+
 
   const totalPages = Math.ceil(sortedPojazdy.length / itemsPerPage);
 
@@ -358,6 +336,41 @@ const Dashboard = () => {
       setCurrentPage(currentPage - 1);
     }
   };
+
+  const fetchStats = () => {
+    fetch('http://localhost:5000/api/pojazdy/stats')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text(); // Zamiast response.json()
+      })
+      .then(text => {
+        if (text) {
+          return JSON.parse(text); // Parsuj tylko, jeśli odpowiedź nie jest pusta
+        }
+        return {}; // Zwróć pusty obiekt, jeśli odpowiedź jest pusta
+      })
+      .then(data => {
+        setStats(data);
+      })
+      .catch(error => console.error('Error fetching stats:', error));
+  };
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const handleShowStats = () => {
+    fetchStats();
+    setShowStatsModal(true);
+  };
+
+  const handleCloseStats = () => {
+    setShowStatsModal(false);
+  };
+
+
 
   return (
     <div className="dashboard-container">
@@ -845,27 +858,19 @@ const Dashboard = () => {
             className={`filter-button ${activeFilter === "cars" ? "active" : ""}`}
             onClick={() => handleFilterClick("cars")}
           >
-            Samochody <span className="badge">{totalCars/*filteredByCategory.filter((p) => p.typ === "Samochód").length*/}</span>
+            Samochody <span
+              className="badge">{totalCars/*filteredByCategory.filter((p) => p.typ === "Samochód").length*/}</span>
           </button>
           <button
             className={`filter-button ${activeFilter === "motorcycles" ? "active" : ""}`}
             onClick={() => handleFilterClick("motorcycles")}
           >
-            Motocykle <span className="badge">{totalMotorcycles/*filteredByCategory.filter((p) => p.typ === "Motocykl").length*/}</span>
+            Motocykle <span
+              className="badge">{totalMotorcycles/*filteredByCategory.filter((p) => p.typ === "Motocykl").length*/}</span>
           </button>
         </div>
 
-        {/* Wyniki wyszukiwania */}
-
-
-        {/*{vehicles.map((vehicle) => (*/}
-        {/*    <div className="vehicle-card" key={vehicle.id}>*/}
-        {/*      <div className="vehicle-icon">🚗</div>*/}
-        {/*      <h3 className="vehicle-title">{`${vehicle.year} ${vehicle.brand} ${vehicle.model}`}</h3>*/}
-        {/*      <p className="vehicle-vin">VIN: {vehicle.vin}</p>*/}
-        {/*      <button className="details-button" onClick={() => handleShowDetails(vehicle)}>Zobacz szczegóły</button>*/}
-        {/*    </div>*/}
-        {/*))}*/}
+        <button className="stat-button" onClick={handleShowStats}>Pokaż statystyki</button>
 
         {/* Paginacja */}
         <div className="pagination">
@@ -902,7 +907,6 @@ const Dashboard = () => {
         </div>
 
 
-
         {selectedVehicle && (
           <VehicleDetailsModal
             vehicle={selectedVehicle}
@@ -918,13 +922,12 @@ const Dashboard = () => {
           />
         )}
 
-
-
-
-        {/*<div className="search-results">*/}
-
-
-        {/*</div>*/}
+        {showStatsModal && (
+          <StatisticsModal
+            onClose={handleCloseStats}
+            stats={stats}
+          />
+        )}
 
       </div>
     </div>
