@@ -89,42 +89,51 @@ Diagram Gantta dostępny w dokumentacji projektowej.
 ## Prezentacja warstwy użytkowej
 
 ### Główna strona
-
+---
 ![Główne okno aplikacji](projekt/images/EkranGlowny.png)
 
 ### Sekcja logowania
-
+---
 ![Logowanie](projekt/images/EkranLogowania.png)
 
 ### Sekcja rejestracji
-
+---
 ![Rejestracja](projekt/images/EkranRejestracji.png)
+
+### Walidacja
+---
 ![Komunikaty walidacyjne](projekt/images/Komunikaty.png)
-![Komunikaty sukcesu](projekt/images/Komunikaty2.png)
+
+### Komunikaty
+---
+![Komunikaty](projekt/images/Komunikaty2.png)
 
 ### Resetowanie hasła
-
+---
 ![Resetowanie hasła](projekt/images/ResetowanieHasla.png)
 
-### Dashboard i przeglądanie pojazdów
-
+### Dashboard
+---
 ![Dashboard](projekt/images/Ekran.png)
+
+### Szczegóły pojazdów
+---
 ![Szczegóły pojazdu](projekt/images/Szczegoly.png)
 
 #### Historia serwisowa
-
+---
 ![Historia serwisowa](projekt/images/Historia.png)
 
 #### Lista właścicieli
-
+---
 ![Lista właścicieli](projekt/images/ListaWlascicieli.png)
 
 #### Ubezpieczenia
-
+---
 ![Ubezpieczenie](projekt/images/Ubezpieczenie.png)
 
 #### Usuwanie pojazdu
-
+---
 ![Usuwanie pojazdu](projekt/images/usuwanie.png)
 
 ---
