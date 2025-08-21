@@ -16,7 +16,6 @@ Aplikacja webowa do zarządzania bazą pojazdów stworzona przy użyciu React.js
 8. [Prezentacja warstwy użytkowej](#prezentacja-warstwy-użytkowej)  
 9. [Wykorzystane funkcje języka JavaScript](#wykorzystane-funkcje-języka-javascript)  
 10. [Podsumowanie](#podsumowanie)  
-11. [Literatura](#literatura)  
 
 ---
 
